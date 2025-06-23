@@ -1,0 +1,17 @@
+﻿version: "3.0"
+
+services:
+  db:
+    image: postgres
+    container_name: postgres_db
+    environment:
+      POSTGRES_USER: Admin
+      POSTGRES_PASSWORD: 13ssss13
+      POSTGRES_DB: RoomReservations
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
