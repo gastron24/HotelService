@@ -2,11 +2,12 @@ using Microsoft.AspNetCore.Identity;
 
 namespace RoomReservations.Models;
 
-public class User : IdentityUser
+public class User 
 {
-    public string Role { get; set; } = "User";
-    public string UserName { get; set; } = string.Empty;
-    public string Password { get; set; } = string.Empty;
-    public decimal Balance { get; set; }
-    public int NumberOfRooms { get; set; }
+    public string Id { get; set; } = new Guid().ToString();
+    public string Name { get; set; } = string.Empty;
+    public string Role { get; set; } = "user";
+    public Decimal Balance { get; set; } 
+    public int NumberOfRoom { get; set; }
+    
 }

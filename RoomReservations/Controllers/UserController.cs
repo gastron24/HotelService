@@ -1,46 +1,40 @@
-using System.Runtime.CompilerServices;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Protocols.OpenIdConnect;
-using RoomReservations.Data;
-using RoomReservations.Models;
-
-namespace RoomReservations.Controllers;
+using RoomReservations.Dto;
 
 [ApiController]
 [Route("api/user/[controller]")]
 public class UserController : ControllerBase
 {
-    private User _user;
-    private RoomReservationDb _db;
-    
-    public UserController(RoomReservations.Models.User user, RoomReservations.Data.RoomReservationDb db)
-    {
-        _user = user;
-        _db = db;
-    }
+    private readonly IReservationService _reservationService;
 
-    [HttpPost]
-    public IActionResult ReserveRoom()
+    public UserController(IReservationService reservationService) => 
+        _reservationService = reservationService;
+
+    [HttpPost("reserve")]
+    public async Task<IActionResult> ReserveRoom([FromBody] ReservationDto dto)
     {
-        
-    }
-    
-    
-    [HttpGet]
-    public IActionResult GetInfoReserve()
-    {
-        if (_user == null)
+        try
         {
-            return NotFound($"Пользователя {_user} не существует.");
-        }
+            var reservation = new Reservation
+            {
+                RoomId = dto.RoomId,
+                StartDate = dto.StartTime,
+                EndDate = dto.EndTime
+            };
 
-        return Ok(_user);
+            var createdReservation = await _reservationService.CreateReservationAsync(reservation, dto.UserId);
+            return CreatedAtAction(nameof(GetMyReservations), new { id = createdReservation.Id }, createdReservation);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
-    
-    
-    
-
-
-
+    [HttpGet("reservations/{userId}")]
+    public async Task<IActionResult> GetMyReservations(string userId)
+    {
+        var reservations = await _reservationService.GetReservationsByUserIdAsync(userId);
+        return Ok(reservations);
+    }
 }

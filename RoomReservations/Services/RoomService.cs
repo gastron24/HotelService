@@ -1,8 +1,8 @@
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using RoomReservations.Data;
 using RoomReservations.Models;
-
-namespace RoomReservations.Services;
+using RoomReservations.Services;
 
 public class RoomService : IRoomService
 {
@@ -17,7 +17,9 @@ public class RoomService : IRoomService
 
     public async Task<Room> GetRoomByIdAsync(Guid id)
     {
-        return await _db.Rooms.Include(r => r.Reservations).FirstOrDefaultAsync(r => r.Id == id);
+        return await _db.Rooms
+            .Include(r => r.Reservations)
+            .FirstOrDefaultAsync(r => r.Id == id);
     }
 
     public async Task<Room> CreateRoomAsync(Room room)
@@ -35,6 +37,6 @@ public class RoomService : IRoomService
             _db.Rooms.Remove(room);
             await _db.SaveChangesAsync();
         }
+
     }
-    
 }
