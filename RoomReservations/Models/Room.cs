@@ -1,6 +1,6 @@
 namespace RoomReservations.Models;
 
-public class ClassicRoom
+public class Room
 {
     public Guid NumberRoom { get; set; }
     public string Name { get; set; } = string.Empty;
